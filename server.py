@@ -5,9 +5,13 @@ from tornado.web import StaticFileHandler
 from tornado.web import Application
 from tornado.ioloop import IOLoop
 from tornado.httpserver import HTTPServer
-import os.path
+import os
 
 path = os.path.dirname(__file__)
+
+static_path = path + '/static'
+if not os.path.isdir(static_path):
+    os.mkdir(static_path)
 
 
 class MyStaticFileHandler(StaticFileHandler):
@@ -18,7 +22,7 @@ class MyStaticFileHandler(StaticFileHandler):
 
 
 app = Application([
-    (r'/(.*)', MyStaticFileHandler, {'path': path + '/static', 'default_filename': 'index.html'})
+    (r'/(.*)', MyStaticFileHandler, {'path': static_path, 'default_filename': 'index.html'})
 ])
 
 server = HTTPServer(app)
