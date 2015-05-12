@@ -5,6 +5,7 @@ from tornado.web import StaticFileHandler
 from tornado.web import Application
 from tornado.ioloop import IOLoop
 from tornado.httpserver import HTTPServer
+from tornado.web import RequestHandler
 import os
 
 path = os.path.dirname(__file__)
@@ -20,8 +21,14 @@ class MyStaticFileHandler(StaticFileHandler):
         # Disable cache
         self.set_header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
 
+class IndexHandler(RequestHandler):
+
+    def get(self, *args, **kwargs):
+        url = 'http://' + self.request.headers['Host'] + '/app'
+        self.redirect(url)
 
 app = Application([
+    (r'/', IndexHandler),
     (r'/(.*)', MyStaticFileHandler, {'path': static_path, 'default_filename': 'index.html'})
 ])
 
